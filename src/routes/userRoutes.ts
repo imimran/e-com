@@ -1,4 +1,4 @@
-import { createUserSchema, createPasswordSchema } from "../validators/user";
+import { createUserSchema, createPasswordSchema, loginSchema } from "../validators/user";
 import express from "express";
 import UserController from "../controllers/userController";
 
@@ -8,6 +8,7 @@ import { tokenAuth } from "../middlewares/tokenAuth";
 const router = express.Router();
 
 router.get("/all", UserController.getAllUsers);
+router.post("/login", inputValidator(loginSchema), UserController.login);
 router.put("/set-password", tokenAuth, inputValidator(createPasswordSchema), UserController.setPassword);
 
 router.post(

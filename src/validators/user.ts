@@ -17,3 +17,12 @@ export const createPasswordSchema =  yup.object({
   confirm_password: yup.string().required()
      .oneOf([yup.ref('password'), null], 'Passwords must match')
 });
+
+export const loginSchema =  yup.object({
+  email: yup
+    .string()
+    .email("Must be a valid email")
+    .max(255)
+    .required("Email is required"),
+  password: yup.string().required('Password is required'),
+});
