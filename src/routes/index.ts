@@ -1,11 +1,9 @@
 import express from "express";
-// import MemberRouter from "./member/memberRouter";
-
+import UserRouter from "./userRoutes";
 
 const router = express.Router();
 
-
-// router.use("/album", AlbumRouter);
+router.use("/user", UserRouter);
 router.all("*", (_req, res) => {
   res.status(404).send("Route not found");
 });
