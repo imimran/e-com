@@ -4,7 +4,7 @@ interface IOrderItemModel {
   ProductId: ObjectId;
   TotalPrice: number;
   Quantity: string;
-  Sizes: string[];
+  Size: string;
   OrderId: ObjectId;
 }
 export interface IOrderItemDocument extends IOrderItemModel, Document {}
@@ -20,7 +20,7 @@ const OrderItemSchema = new Schema<IOrderItemModel>(
       required: true,
     },
     Quantity: Number,
-    Sizes: [String],
+    Size: String,
     OrderId: {
       type: Schema.Types.ObjectId,
       ref: "Client",
