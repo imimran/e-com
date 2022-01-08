@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import fs from 'fs';
 import Product, { updateProductSingle } from "../models/product";
 import { ICreateProductBody } from "../types/product";
 
@@ -99,10 +100,20 @@ const getAllProduct = async (req: Request, res: Response) => {
       
 };
 
+const uploadProduct =  async(req: Request, res: Response) => {
+
+
+let products : any  = fs.readFileSync('products.json');  
+let data = JSON.parse(products);  
+const upload = await Product.insertMany(data)  
+res.json(upload)
+}
+
 export default {
   addProduct,
   getProduct,
   updateProduct,
   removeProduct,
   getAllProduct,
+  uploadProduct
 };

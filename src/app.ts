@@ -1,6 +1,7 @@
 import express, { NextFunction, Request, Response } from "express";
 import passport from "passport";
 import cookieParser from "cookie-parser";
+import path from "path";
 import errorHandler from "./middlewares/errorHandler";
 import { createConnectionAndInitialize } from "./models/db";
 import logger from "./logger";
@@ -15,6 +16,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(passport.initialize());
 app.use(cookieParser());
+
+app.use(express.static(path.join(__dirname, 'src/uploads/')));
+
 createConnectionAndInitialize(MONGO_URL)
   .then()
   .catch((err) => {
