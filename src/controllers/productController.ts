@@ -83,11 +83,10 @@ const getAllProduct = async (req: Request, res: Response) => {
     sort[req.body.sortby] = req.body.sortType === 'desc' ? -1 : 1
   }
 
-  console.log(sort)
   var perPage = req.body.total,
     page = Math.max(0, req.body.page);
 
-  const products = await Product.find({}, null, {sort: sort})
+  const products = await Product.find({}, null, {sort: sort, limit: perPage })
 
  
    
@@ -95,7 +94,7 @@ const getAllProduct = async (req: Request, res: Response) => {
   return res.json({
           products: products,
           currentPage: page,
-          totalPage: totalProduct / perPage,
+          totalPage: Math.ceil(totalProduct / perPage),
         });
       
 };
