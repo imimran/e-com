@@ -4,10 +4,12 @@ import UserController from "../controllers/userController";
 
 import inputValidator from "../middlewares/inputValidator";
 import { tokenAuth } from "../middlewares/tokenAuth";
+import auth from "../middlewares/auth";
+
 
 const router = express.Router();
 
-router.get("/all", UserController.getAllUsers);
+router.get("/all",  auth, UserController.getAllUsers);
 router.post("/login", inputValidator(loginSchema), UserController.login);
 router.put("/set-password", tokenAuth, inputValidator(createPasswordSchema), UserController.setPassword);
 
