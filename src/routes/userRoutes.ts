@@ -11,6 +11,7 @@ const router = express.Router();
 
 router.get("/all",  auth, UserController.getAllUsers);
 router.post("/login", inputValidator(loginSchema), UserController.login);
+router.post("/logout", UserController.logout);
 router.put("/set-password", tokenAuth, inputValidator(createPasswordSchema), UserController.setPassword);
 
 router.post(

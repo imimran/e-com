@@ -118,7 +118,8 @@ const login = async (req: Request, res: Response) => {
   }
 
   //create and store refresh token into db...
-  const refreshToken = crypto.randomBytes(50).toString("hex");
+  const generateToken = crypto.randomBytes(10).toString("hex");
+  const refreshToken = jwt.sign(generateToken, "jwtPrivateKey");
 
   const payload = {
     id: foundUser._id,
@@ -127,17 +128,29 @@ const login = async (req: Request, res: Response) => {
 
   //console.log("payload data", payload);
 
-  jwt.sign(payload, "jwtPrivateKey",{ expiresIn: "24h" }, (err, token) => {
+  jwt.sign(payload, "jwtPrivateKey", { expiresIn: "24h" }, (err, token) => {
     if (err) {
       throw err;
     }
 
-    return res.status(200).json({
-      accessToken: token,
-      refreshToken: refreshToken,
-      user_info: payload,
-    });
+    return res
+      .cookie("accessToken", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+      })
+      .status(200)
+      .json({
+        accessToken: token,
+        refreshToken: refreshToken,
+      });
   });
+};
+
+const logout = async (_req: Request, res: Response) => {
+  return res
+    .clearCookie("accessToken")
+    .status(200)
+    .json({ message: "Successfully logged out" });
 };
 
 export default {
@@ -146,4 +159,5 @@ export default {
   getUser,
   setPassword,
   login,
+  logout,
 };
