@@ -21,69 +21,84 @@ const addProduct = async (req: Request, res: Response) => {
 };
 
 const getProduct = async (req: Request, res: Response) => {
-    const { productId } = req.params;
-    const foundProduct = await Product.findOne({
-      _id: productId,
-    });
-  
-    if (!foundProduct) {
-      return res.status(404).json({ message: "No Product found" });
-    }
-  
-    return res.status(200).json(foundProduct);
+  const { productId } = req.params;
+  const foundProduct = await Product.findOne({
+    _id: productId,
+  });
+
+  if (!foundProduct) {
+    return res.status(404).json({ message: "No Product found" });
+  }
+
+  return res.status(200).json(foundProduct);
+};
+
+const updateProduct = async (req: Request, res: Response) => {
+  const { productId } = req.params;
+  const data = req.body;
+  const foundProduct = await Product.findOne({
+    _id: productId,
+  });
+
+  if (!foundProduct) {
+    return res.status(404).json({ message: "No product found" });
+  }
+
+  const query = { _id: productId };
+
+  const update = {
+    Name: data.Name,
+    Price: data.Price,
+    Details: data.Details,
+    Quantity: data.Quantity,
+    Sizes: data.Sizes,
+    SKU: data.SKU,
+    Product_images: data.Product_images,
   };
 
-  const updateProduct = async (req: Request, res: Response) => {
-    const { productId } = req.params;
-    const data = req.body;
-    const foundProduct = await Product.findOne({
-      _id: productId,
-    });
-  
-    if (!foundProduct) {
-      return res.status(404).json({ message: "No product found" });
-    }
-  
-  
+  const updateData = await updateProductSingle(query, update);
 
-    const query = { _id: productId };
-  
-    const update = {
-        Name: data.Name,
-        Price: data.Price,
-        Details: data.Details,
-        Quantity: data.Quantity,
-        Sizes: data.Sizes,
-        SKU: data.SKU,
-        Product_images: data.Product_images,
-    };
-  
-    const updateData = await updateProductSingle(query, update);
-  
-    res.json(updateData);
-  };
-  
-  const removeProduct = async (req: Request, res: Response) => {
-    const { productId } = req.params;
-    const foundProduct = await Product.findOne({
-      _id: productId,
-    });
-  
-    if (!foundProduct) {
-      return res.status(404).json({ message: "No product found" });
-    }
-  
-    await Product.findByIdAndRemove(productId);
-    return res.status(200).json({ message: "Product Deleted Successfully" });
-  };
+  res.json(updateData);
+};
 
- const getAllProduct= async (_req: Request, res: Response) => {
-    const products = await Product.find().sort({
-      createdAt: -1,
-    });
-    return res.status(200).json(products);
-  };
-  
+const removeProduct = async (req: Request, res: Response) => {
+  const { productId } = req.params;
+  const foundProduct = await Product.findOne({
+    _id: productId,
+  });
+
+  if (!foundProduct) {
+    return res.status(404).json({ message: "No product found" });
+  }
+
+  await Product.findByIdAndRemove(productId);
+  return res.status(200).json({ message: "Product Deleted Successfully" });
+};
+
+const getAllProduct = async (req: Request, res: Response) => {
+  const sort: any = {}
+
+  if (req.body.sortby && req.body.sortType) 
+  {
+    sort[req.body.sortby] = req.body.sortType === 'desc' ? -1 : 1
+  }
+
+  console.log(sort)
+  var perPage = req.body.total,
+    page = Math.max(0, req.body.page);
+
+  const products = await Product.find({}, null, {sort: sort})
+
+ 
+   
+  const totalProduct =  await Product.count()
+  return res.json({
+          products: products,
+          currentPage: page,
+          totalPage: totalProduct / perPage,
+        });
+      
+};
 
 export default {
   addProduct,
