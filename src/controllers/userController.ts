@@ -60,18 +60,6 @@ const addUser = async (req: Request, res: Response) => {
   return res.status(201).json(user);
 };
 
-const getUser = async (req: Request, res: Response) => {
-  const { userId } = req.params;
-  const foundUser = await User.findOne({
-    _id: userId,
-  });
-
-  if (!foundUser) {
-    return res.status(404).json({ message: "No User found" });
-  }
-
-  return res.status(200).json(foundUser);
-};
 
 const setPassword = async (req: Request, res: Response) => {
   const data = req.body;
@@ -156,7 +144,6 @@ const logout = async (_req: Request, res: Response) => {
 export default {
   getAllUsers,
   addUser,
-  getUser,
   setPassword,
   login,
   logout,

@@ -55,11 +55,11 @@ router.post("/logout", UserController.logout);
 router.put("/set-password", tokenAuth, inputValidator(createPasswordSchema), UserController.setPassword);
 
 router.post(
-  "/create",
+  "/registration",
   inputValidator(createUserSchema),
   UserController.addUser
 );
 
-router.get("/get/:userId", UserController.getUser);
+
 
 export default router;
