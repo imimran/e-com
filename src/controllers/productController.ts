@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
-import fs from 'fs';
+import fs from "fs";
 import Product, { updateProductSingle } from "../models/product";
 import { ICreateProductBody } from "../types/product";
+
+
 
 const addProduct = async (req: Request, res: Response) => {
   const data: ICreateProductBody = req.body;
@@ -77,37 +79,31 @@ const removeProduct = async (req: Request, res: Response) => {
 };
 
 const getAllProduct = async (req: Request, res: Response) => {
-  const sort: any = {}
+  const sort: any = {};
 
-  if (req.body.sortby && req.body.sortType) 
-  {
-    sort[req.body.sortby] = req.body.sortType === 'desc' ? -1 : 1
+  if (req.body.sortby && req.body.sortType) {
+    sort[req.body.sortby] = req.body.sortType === "desc" ? -1 : 1;
   }
 
   var perPage = req.body.total,
     page = Math.max(0, req.body.page);
 
-  const products = await Product.find({}, null, {sort: sort, limit: perPage })
+  const products = await Product.find({}, null, { sort: sort, limit: perPage });
 
- 
-   
-  const totalProduct =  await Product.count()
+  const totalProduct = await Product.count();
   return res.json({
-          products: products,
-          currentPage: page,
-          totalPage: Math.ceil(totalProduct / perPage),
-        });
-      
+    products: products,
+    currentPage: page,
+    totalPage: Math.ceil(totalProduct / perPage),
+  });
 };
 
-const uploadProduct =  async(req: Request, res: Response) => {
-
-
-let products : any  = fs.readFileSync('products.json');  
-let data = JSON.parse(products);  
-const upload = await Product.insertMany(data)  
-res.json(upload)
-}
+const uploadProduct = async (req: Request, res: Response) => {
+  let products: any = fs.readFileSync("products.json");
+  let data = JSON.parse(products);
+  const upload = await Product.insertMany(data);
+  res.json(upload);
+};
 
 export default {
   addProduct,
@@ -115,5 +111,5 @@ export default {
   updateProduct,
   removeProduct,
   getAllProduct,
-  uploadProduct
+  uploadProduct,
 };
