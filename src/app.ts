@@ -18,7 +18,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(passport.initialize());
 app.use(cookieParser());
 
-app.use(express.static(path.join(__dirname, "src/uploads/")));
 
 createConnectionAndInitialize(MONGO_URL)
   .then()

@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongoose';
 import { Request, Response } from "express";
 import Order from "../models/order";
 import OrderItem from "../models/orderItem";
@@ -32,10 +33,10 @@ const addOrder = async (req: Request, res: Response) => {
 
   const ProductList = req.body.ProductList.map(
     async (item: {
-      ProductId: any;
-      Quantity: any;
-      TotalPrice: any;
-      Size: any;
+      ProductId: ObjectId;
+      Quantity: Object;
+      TotalPrice: number;
+      Size: string;
     }) => {
       const newItem = new OrderItem({
         ProductId: item.ProductId,
