@@ -1,3 +1,4 @@
+import { generateInvoice, generateInvoiceHTML } from './../template/generatePDF';
 import { ObjectId } from "mongoose";
 import { NextFunction, Request, Response } from "express";
 import Order from "../models/order";
@@ -105,6 +106,57 @@ const getClientDetails = async (req: Request, res: Response) => {
     });
   }
 
+  // if (foundOrders) {
+  //   foundOrders.map(async (item: any) => {
+  //     console.log("item", item._id);
+
+  //     let foundOrderItem = await OrderItem.findOne({
+  //       OrderId: item._id,
+  //     })
+  //       .populate("ProductId")
+  //       .populate("OrderId");
+
+  //     console.log("data...", foundOrderItem);
+  //     if (foundOrderItem) {
+  //       res.status(200).json(foundOrderItem);
+  //     }
+  //   });
+  // }
+
+  if (foundOrders) {
+    const foundOrderItems = foundOrders.map(async (item) => {
+      const foundOrderItem = await OrderItem.findOne({
+        OrderId: item._id,
+      })
+        .populate("ProductId")
+        .populate("OrderId");
+      console.log("data. data..", foundOrderItem);
+      return foundOrderItem;
+    
+    });
+  
+   res.json({foundOrderItems})
+    
+  }
+};
+
+const getClientsOrderDetailsPDF = async (req: Request, res: Response) => {
+  const { clientId } = req.params;
+
+  let foundClient = await Client.findOne({
+    _id: clientId,
+  });
+  if (!foundClient) {
+    return res.status(404).json({ message: "No client found" });
+  }
+
+  let foundOrders;
+  if (foundClient) {
+    foundOrders = await Order.find({
+      ClientId: { $in: [foundClient._id] },
+    });
+  }
+
   if (foundOrders) {
     foundOrders.map(async (item: any) => {
       console.log("item", item._id);
@@ -117,7 +169,16 @@ const getClientDetails = async (req: Request, res: Response) => {
 
       console.log("data...", foundOrderItem);
       if (foundOrderItem) {
-        res.status(200).json(foundOrderItem);
+        generateInvoice(
+          generateInvoiceHTML(foundOrderItem),
+          (err, pdfStream) => {
+            if (!err && pdfStream) {
+              pdfStream.pipe(res);
+            }
+          }
+        );
+      } else {
+        res.status(404).json({ msg: "Order details not found" });
       }
     });
   }
@@ -126,4 +187,5 @@ export default {
   addOrder,
   getOrder,
   getClientDetails,
+  getClientsOrderDetailsPDF,
 };
