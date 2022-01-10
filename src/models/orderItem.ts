@@ -13,7 +13,7 @@ const OrderItemSchema = new Schema<IOrderItemModel>(
   {
     ProductId: {
       type: Schema.Types.ObjectId,
-      ref: "Product",
+      ref: "products",
     },
     TotalPrice: {
       type: Number,
@@ -23,7 +23,7 @@ const OrderItemSchema = new Schema<IOrderItemModel>(
     Size: String,
     OrderId: {
       type: Schema.Types.ObjectId,
-      ref: "Client",
+      ref: "clients",
     },
   },
   { timestamps: true }
