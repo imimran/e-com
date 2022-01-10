@@ -9,6 +9,7 @@ import OrderItem from "../models/orderItem";
 import Client from "../models/client";
 import QuantityM from "../models/quantity";
 import Product from "../models/product";
+import logger from "../logger";
 
 const addOrder = async (req: Request, res: Response) => {
   const data = req.body;
@@ -109,31 +110,14 @@ const getClientDetails = async (req: Request, res: Response) => {
     });
   }
 
-  // if (foundOrders) {
-  //   foundOrders.map(async (item: any) => {
-  //     console.log("item", item._id);
-
-  //     let foundOrderItem = await OrderItem.findOne({
-  //       OrderId: item._id,
-  //     })
-  //       .populate("ProductId")
-  //       .populate("OrderId");
-
-  //     console.log("data...", foundOrderItem);
-  //     if (foundOrderItem) {
-  //       res.status(200).json(foundOrderItem);
-  //     }
-  //   });
-  // }
-
   if (foundOrders) {
     foundOrders.map(async (item) => {
       const foundOrderItems = await OrderItem.findOne({
         OrderId: item._id,
       })
         .populate("ProductId")
-        .populate("OrderId")
-      console.log("data. data..", foundOrderItems);
+        .populate("OrderId");
+      logger.info("data..", foundOrderItems);
       if (foundOrderItems) {
         return res.json(foundOrderItems);
       }
@@ -166,7 +150,7 @@ const getClientsOrderDetailsPDF = async (req: Request, res: Response) => {
         .populate("ProductId")
         .populate("OrderId");
 
-      console.log("pdf...", foundOrderItem);
+        logger.info("pdf...", foundOrderItem);
       if (foundOrderItem) {
         generateInvoice(
           generateInvoiceHTML(foundOrderItem),
@@ -177,7 +161,6 @@ const getClientsOrderDetailsPDF = async (req: Request, res: Response) => {
           }
         );
       }
-     
     });
   }
 };

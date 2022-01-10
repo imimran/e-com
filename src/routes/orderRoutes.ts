@@ -8,6 +8,6 @@ const router = express.Router();
 router.post("/order", auth, OrderControllers.addOrder);
 router.get("/:orderId", auth, OrderControllers.getOrder);
 router.get("/client/:clientId", auth, OrderControllers.getClientDetails);
-router.get("/client/:clientId/pdf", auth, OrderControllers.getClientsOrderDetailsPDF);
+router.get("/client/:clientId/download", auth, OrderControllers.getClientsOrderDetailsPDF);
 
 export default router;
