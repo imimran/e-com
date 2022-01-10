@@ -69,6 +69,21 @@ const addOrder = async (req: Request, res: Response) => {
   );
 };
 
+
+const getOrder = async (req: Request, res: Response) => {
+  const { orderId } = req.params;
+  let foundOrder = await Order.findOne({
+    _id: orderId,
+  }).populate("ClientId");
+
+  let foundOrderItem = await OrderItem.findOne({
+    OrderId: { $in: [orderId]}
+  })
+
+
+  return res.status(200).json({ order: foundOrder, order_items:foundOrderItem });
+};
 export default {
   addOrder,
+  getOrder,
 };
