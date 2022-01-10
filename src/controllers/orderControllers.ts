@@ -1,4 +1,7 @@
-import { generateInvoice, generateInvoiceHTML } from './../template/generatePDF';
+import {
+  generateInvoice,
+  generateInvoiceHTML,
+} from "./../template/generatePDF";
 import { ObjectId } from "mongoose";
 import { NextFunction, Request, Response } from "express";
 import Order from "../models/order";
@@ -124,19 +127,17 @@ const getClientDetails = async (req: Request, res: Response) => {
   // }
 
   if (foundOrders) {
-    const foundOrderItems = foundOrders.map(async (item) => {
-      const foundOrderItem = await OrderItem.findOne({
+    foundOrders.map(async (item) => {
+      const foundOrderItems = await OrderItem.findOne({
         OrderId: item._id,
       })
         .populate("ProductId")
-        .populate("OrderId");
-      console.log("data. data..", foundOrderItem);
-      return foundOrderItem;
-    
+        .populate("OrderId")
+      console.log("data. data..", foundOrderItems);
+      if (foundOrderItems) {
+        return res.json(foundOrderItems);
+      }
     });
-  
-   res.json({foundOrderItems})
-    
   }
 };
 
@@ -159,15 +160,13 @@ const getClientsOrderDetailsPDF = async (req: Request, res: Response) => {
 
   if (foundOrders) {
     foundOrders.map(async (item: any) => {
-      console.log("item", item._id);
-
       let foundOrderItem = await OrderItem.findOne({
         OrderId: item._id,
       })
         .populate("ProductId")
         .populate("OrderId");
 
-      console.log("data...", foundOrderItem);
+      console.log("pdf...", foundOrderItem);
       if (foundOrderItem) {
         generateInvoice(
           generateInvoiceHTML(foundOrderItem),
@@ -177,9 +176,8 @@ const getClientsOrderDetailsPDF = async (req: Request, res: Response) => {
             }
           }
         );
-      } else {
-        res.status(404).json({ msg: "Order details not found" });
       }
+     
     });
   }
 };
