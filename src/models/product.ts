@@ -1,31 +1,18 @@
 import mongoose, { Schema, Document, ObjectId, FilterQuery, UpdateQuery } from "mongoose";
 
-interface IQuantityModel {
-  ProductId?: ObjectId;
-  Quantity: number;
-}
+
 
 interface IProductModel {
   Name: string;
   Price: string;
   Details: string;
-  Quantity: IQuantityModel;
+  Quantity: ObjectId;
   Sizes: string[];
   SKU: string;
   Product_images: string[];
 }
 export interface IProductDocument extends IProductModel, Document {}
 
-export const QantitySchema = new Schema<IQuantityModel>({
-  ProductId: {
-    type: Schema.Types.ObjectId,
-    required: false,
-  },
-  Quantity: {
-    type: Number,
-    required: true,
-  },
-});
 
 const ProductSchema = new Schema<IProductModel>(
   {
@@ -41,7 +28,10 @@ const ProductSchema = new Schema<IProductModel>(
       type: String,
       required: true,
     },
-    Quantity: QantitySchema,
+    Quantity: {
+      type: Schema.Types.ObjectId,
+      ref: "quantities",
+    },
     Sizes: [String],
     SKU: {
       type: String,
