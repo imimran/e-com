@@ -1,5 +1,5 @@
 import { ObjectId } from "mongoose";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import Order from "../models/order";
 import OrderItem from "../models/orderItem";
 import Client from "../models/client";
@@ -69,21 +69,61 @@ const addOrder = async (req: Request, res: Response) => {
   );
 };
 
-
 const getOrder = async (req: Request, res: Response) => {
   const { orderId } = req.params;
   let foundOrder = await Order.findOne({
     _id: orderId,
   }).populate("ClientId");
 
+  if (!foundOrder) {
+    return res.status(404).json({ message: "No Product found" });
+  }
+
   let foundOrderItem = await OrderItem.findOne({
-    OrderId: { $in: [orderId]}
-  })
+    OrderId: { $in: [orderId] },
+  });
 
+  return res
+    .status(200)
+    .json({ order: foundOrder, order_items: foundOrderItem });
+};
 
-  return res.status(200).json({ order: foundOrder, order_items:foundOrderItem });
+const getClientDetails = async (req: Request, res: Response) => {
+  const { clientId } = req.params;
+
+  let foundClient = await Client.findOne({
+    _id: clientId,
+  });
+  if (!foundClient) {
+    return res.status(404).json({ message: "No client found" });
+  }
+
+  let foundOrders = await Order.find({
+    ClientId: { $in: [foundClient._id] },
+  });
+
+  if (!foundOrders) {
+    return res.status(404).json({ message: "No Order found" });
+  }
+
+  if (foundOrders) {
+    foundOrders.map(async (item) => {
+      // console.log('item', item._id);
+
+      const foundOrderItem = await OrderItem.findOne({
+        OrderId: item._id,
+      })
+        .populate("ProductId")
+        .populate("OrderId");
+      console.log("data...", foundOrderItem);
+      // return res.json(foundOrderItem);
+    
+    });
+  }
+
 };
 export default {
   addOrder,
   getOrder,
+  getClientDetails,
 };

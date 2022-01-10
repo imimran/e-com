@@ -23,7 +23,7 @@ const OrderItemSchema = new Schema<IOrderItemModel>(
     Size: String,
     OrderId: {
       type: Schema.Types.ObjectId,
-      ref: "clients",
+      ref: "orders",
     },
   },
   { timestamps: true }
