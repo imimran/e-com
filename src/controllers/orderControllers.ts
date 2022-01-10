@@ -98,29 +98,29 @@ const getClientDetails = async (req: Request, res: Response) => {
     return res.status(404).json({ message: "No client found" });
   }
 
-  let foundOrders = await Order.find({
-    ClientId: { $in: [foundClient._id] },
-  });
-
-  if (!foundOrders) {
-    return res.status(404).json({ message: "No Order found" });
+  let foundOrders;
+  if (foundClient) {
+    foundOrders = await Order.find({
+      ClientId: { $in: [foundClient._id] },
+    });
   }
 
   if (foundOrders) {
-    foundOrders.map(async (item) => {
-      // console.log('item', item._id);
+    foundOrders.map(async (item: any) => {
+      console.log("item", item._id);
 
-      const foundOrderItem = await OrderItem.findOne({
+      let foundOrderItem = await OrderItem.findOne({
         OrderId: item._id,
       })
         .populate("ProductId")
         .populate("OrderId");
+
       console.log("data...", foundOrderItem);
-      // return res.json(foundOrderItem);
-    
+      if (foundOrderItem) {
+        res.status(200).json(foundOrderItem);
+      }
     });
   }
-
 };
 export default {
   addOrder,
