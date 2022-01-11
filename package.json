@@ -6,6 +6,7 @@
   "author": "imimran <engr.aih@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "start": "nodemon --config  nodemon.json src/server.ts",
     "dev": "nodemon --config nodemon.json src/server.ts"
   },
   "dependencies": {
