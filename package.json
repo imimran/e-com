@@ -1,7 +1,7 @@
 {
   "name": "pro-net",
   "version": "1.0.0",
-  "main": "app.ts",
+  "main": "server.ts",
   "repository": "https://github.com/imimran/pro-net.git",
   "author": "imimran <engr.aih@gmail.com>",
   "license": "MIT",
