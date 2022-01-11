@@ -106,10 +106,10 @@ const getAllProduct = async (req: Request, res: Response) => {
 };
 
 const uploadProduct = async (req: Request, res: Response) => {
-  let products: any = fs.readFileSync("products.json");
-  let data = JSON.parse(products);
-  const upload = await Product.insertMany(data);
-  res.json(upload);
+  // let products: any = fs.readFileSync("products.json");
+  // let data = JSON.parse(products);
+  // const upload = await Product.insertMany(data);
+  // res.json(upload);
 };
 
 export default {
