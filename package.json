@@ -6,7 +6,7 @@
   "author": "imimran <engr.aih@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node src/server.ts",
+    "start": "node dist/server.ts",
     "build": "tsc",
     "dev": "nodemon --config nodemon.json src/server.ts"
   },
